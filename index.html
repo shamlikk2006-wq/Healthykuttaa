@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthykuttaa | Premium Health Tracking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-spinner"></div>
+        <div style="font-family: var(--font-display); letter-spacing: 0.1em; font-size: 0.9rem;">LOADING DASHBOARD</div>
+    </div>
+
+    <!-- Header -->
+    <header class="brand-header">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+            <!-- Icon injected by JS -->
+        </button>
+        <div class="header-content">
+            <h1 class="brand-title">HEALTHYKUTTAA</h1>
+            <div class="brand-tagline">Track Smart. Eat Balanced.</div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-item active" onclick="switchTab('tracker')">Dashboard</button>
+            <button class="nav-item" onclick="switchTab('leftover')">Fridge Feast</button>
+            <button class="nav-item" onclick="switchTab('grocery')">Grocery</button>
+            <button class="nav-item" onclick="switchTab('tools')">Tools</button>
+        </nav>
+
+        <!-- Module 1: Dashboard Tracker -->
+        <section id="tracker" class="tab-pane active">
+            <div class="dashboard-grid">
+
+                <!-- Food Logger (8 Cols) -->
+                <div class="card col-span-8">
+                    <div class="card-header">
+                        <h2 class="card-title">Daily Intake Log</h2>
+                        <span class="text-accent" id="date-display">Today</span>
+                    </div>
+
+                    <div class="dashboard-grid"
+                        style="grid-template-columns: 1fr auto; gap: 16px; margin-bottom: 24px;">
+                        <input type="text" list="food-options" id="food-input" class="form-control"
+                            placeholder="Type to search food (e.g. Appam)...">
+                        <datalist id="food-options">
+                            <!-- Populated by JS -->
+                        </datalist>
+                        <button onclick="addFood()" class="btn btn-primary">Add Entry</button>
+                    </div>
+
+                    <div id="food-log" class="list-group">
+                        <!-- Entries -->
+                    </div>
+
+                    <div style="margin-top: 32px; border-top: 1px solid var(--border-subtle); padding-top: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span class="text-muted">Total Calories</span>
+                            <span style="font-weight: 600;"><span id="total-cals">0</span> / 2000 kcal</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div id="cal-progress" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <p id="smart-suggestion" class="text-muted" style="font-size: 0.9rem; margin-top: 12px;"></p>
+                    </div>
+                </div>
+
+                <!-- Health Stats (4 Cols) -->
+                <div class="card col-span-4">
+                    <div class="card-header">
+                        <h2 class="card-title">Vitals</h2>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label class="form-label">Blood Sugar (mg/dL)</label>
+                        <input type="number" id="sugar" class="form-control" placeholder="90">
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label class="form-label">Cholesterol (mg/dL)</label>
+                        <input type="number" id="cholesterol" class="form-control" placeholder="180">
+                    </div>
+
+                    <button onclick="checkHealth()" class="btn btn-secondary btn-full">Analyze Status</button>
+
+                    <div id="health-status" class="status-indicator hidden">
+                        <!-- JS injected status -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 2: Leftovers -->
+        <section id="leftover" class="tab-pane">
+            <div class="dashboard-grid">
+                <div class="card col-span-12">
+                    <div class="card-header">
+                        <h2 class="card-title">Ingredient Matcher</h2>
+                        <p class="text-muted" style="font-size: 0.9rem;">Select available items to generate a recipe.
+                        </p>
+                    </div>
+
+                    <div id="ingredient-grid" class="grid-select">
+                        <!-- Checkboxes JS -->
+                    </div>
+
+                    <div style="margin-top: 32px; text-align: right;">
+                        <button onclick="findMeal()" class="btn btn-primary">Generate Recipe</button>
+                    </div>
+
+                    <div id="recipe-result" class="status-indicator hidden" style="text-align: left; padding: 24px;">
+                        <!-- Result -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 3: Grocery -->
+        <section id="grocery" class="tab-pane">
+            <div class="dashboard-grid">
+                <div class="card col-span-12">
+                    <div class="card-header">
+                        <h2 class="card-title">Weekly Planner</h2>
+                    </div>
+                    <div id="meal-grid" class="grid-select">
+                        <!-- JS Meal Selection -->
+                    </div>
+                    <div style="margin-top: 32px;">
+                        <button onclick="generateGrocery()" class="btn btn-secondary">Create Shopping List</button>
+                    </div>
+                    <ul id="shopping-list" class="list-group"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 4: Tools -->
+        <section id="tools" class="tab-pane">
+            <div class="dashboard-grid">
+                <div class="card col-span-6">
+                    <div class="card-header">
+                        <h2 class="card-title">Water Tracker</h2>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 4rem; font-weight: 700; color: var(--accent-primary);"><span
+                                id="water-count">0</span><span
+                                style="font-size: 1.5rem; color: var(--text-secondary);">/8</span></div>
+                        <div class="progress-wrapper">
+                            <div id="water-bar" class="progress-fill"></div>
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+                            <button onclick="updateWater(1)" class="btn btn-primary">+ Glass</button>
+                            <button onclick="updateWater(-1)" class="btn btn-secondary">-</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card col-span-6">
+                    <div class="card-header">
+                        <h2 class="card-title">BMI Calculator</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" id="bmi-h" class="form-control">
+                        </div>
+                        <div>
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" id="bmi-w" class="form-control">
+                        </div>
+                    </div>
+                    <button onclick="calcBMI()" class="btn btn-secondary btn-full"
+                        style="margin-top: 24px;">Calculate</button>
+                    <div id="bmi-res" class="bmi-result-card hidden" aria-live="polite">
+                        <!-- JS Injected Result -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-box">
+            <span onclick="closeModal()" class="remove-btn" style="float: right; font-size: 1.5rem;">&times;</span>
+            <h2 id="modal-title" style="margin-bottom: 16px; font-family: var(--font-display);"></h2>
+            <div id="modal-content" class="text-muted"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-signature">
+        <div class="footer-content">
+            Designed & Developed by<br>
+            <span class="footer-highlight">Fathima Musthafa & Shamli Fathima</span>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
